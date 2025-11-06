@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Play, Do or Go?</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-blue-50 flex flex-col items-center justify-center min-h-screen text-lg font-sans">
+  <div class="bg-white rounded-2xl shadow-xl p-8 max-w-2xl text-center">
+    <h1 class="text-3xl font-bold mb-6 text-blue-700">🎯 Play, Do or Go?</h1>
+    <p id="sentence" class="text-xl mb-6">Let's start!</p>
+
+    <!-- Botones de elección -->
+    <div id="choices" class="space-x-4">
+      <button class="choice bg-blue-500 text-white px-4 py-2 rounded-xl hover:bg-blue-600" onclick="checkAnswer('play')">play</button>
+      <button class="choice bg-green-500 text-white px-4 py-2 rounded-xl hover:bg-green-600" onclick="checkAnswer('do')">do</button>
+      <button class="choice bg-yellow-500 text-white px-4 py-2 rounded-xl hover:bg-yellow-600" onclick="checkAnswer('go')">go</button>
+    </div>
+
+    <p id="feedback" class="mt-4 text-lg font-semibold"></p>
+    <button id="nextBtn" class="hidden mt-6 bg-purple-500 text-white px-4 py-2 rounded-xl hover:bg-purple-600" onclick="nextSentence()">Next ➡️</button>
+    <button id="restartBtn" class="hidden mt-6 bg-pink-500 text-white px-4 py-2 rounded-xl hover:bg-pink-600" onclick="restartGame()">🔁 Try again</button>
+
+    <p id="score" class="mt-6 text-blue-700 font-bold"></p>
+  </div>
+
+  <script>
+    const sentences = [
+      {text: "I ___ football every weekend.", answer: "play"},
+      {text: "My sister likes to ___ gymnastics after school.", answer: "do"},
+      {text: "We ___ swimming in the summer.", answer: "go"},
+      {text: "They ___ tennis at the sports centre.", answer: "play"},
+      {text: "He doesn’t ___ karate.", answer: "do"},
+      {text: "Let’s ___ cycling in the park!", answer: "go"},
+      {text: "I never ___ basketball because I’m too short.", answer: "play"},
+      {text: "She loves to ___ yoga in the morning.", answer: "do"},
+      {text: "We sometimes ___ skiing in winter.", answer: "go"},
+      {text: "My friends ___ volleyball at the beach.", answer: "play"},
+    ];
+
+    let index = 0;
+    let score = 0;
+
+    const sentence = document.getElementById("sentence");
+    const feedback = document.getElementById("feedback");
+    const nextBtn = document.getElementById("nextBtn");
+    const restartBtn = document.getElementById("restartBtn");
+    const scoreDisplay = document.getElementById("score");
+    const choicesDiv = document.getElementById("choices");
+
+    function showSentence() {
+      sentence.textContent = sentences[index].text;
+      feedback.textContent = "";
+      nextBtn.classList.add("hidden");
+      choicesDiv.classList.remove("hidden");
+    }
+
+    function checkAnswer(choice) {
+      const correct = sentences[index].answer;
+      if (choice === correct) {
+        feedback.textContent = "✅ Correct!";
+        feedback.className = "mt-4 text-green-600 font-bold";
+        score++;
+      } else {
+        feedback.textContent = `❌ Oops! The correct answer is "${correct}".`;
+        feedback.className = "mt-4 text-red-600 font-bold";
+      }
+      // Oculta los botones después de responder
+      choicesDiv.classList.add("hidden");
+      nextBtn.classList.remove("hidden");
+      scoreDisplay.textContent = `Score: ${score}/${index + 1}`;
+    }
+
+    function nextSentence() {
+      index++;
+      if (index < sentences.length) {
+        showSentence();
+      } else {
+        endGame();
+      }
+    }
+
+    function endGame() {
+      scoreDisplay.textContent = `Final score: ${score}/${sentences.length}`;
+      nextBtn.classList.add("hidden");
+      choicesDiv.classList.add("hidden");
+
+      if (score >= 6) {
+        sentence.textContent = "🎉 Great job! You’ve finished all the questions!";
+        feedback.textContent = "🏆 Excellent work!";
+        feedback.className = "mt-4 text-green-700 font-bold";
+      } else {
+        sentence.textContent = "😅 Try again!";
+        feedback.textContent = "You can do better! Press the button below to restart.";
+        feedback.className = "mt-4 text-orange-600 font-bold";
+        restartBtn.classList.remove("hidden");
+      }
+    }
+
+    function restartGame() {
+      index = 0;
+      score = 0;
+      restartBtn.classList.add("hidden");
+      scoreDisplay.textContent = "";
+      showSentence();
+    }
+
+    showSentence();
+  </script>
+</body>
+</html>
